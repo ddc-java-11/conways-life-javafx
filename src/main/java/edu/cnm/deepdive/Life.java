@@ -15,7 +15,13 @@
  */
 package edu.cnm.deepdive;
 
+import edu.cnm.deepdive.controller.MainController;
+import java.util.ResourceBundle;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -25,6 +31,14 @@ import javafx.stage.Stage;
  * and teardown tasks.
  */
 public class Life extends Application {
+
+  private static final String RESOURCE_BUNDLE =
+      Life.class.getPackageName().replace('.', '/') + "/strings";
+  private static final String LAYOUT_RESOURCE = "main.fxml";
+  private static final String ICON_RESOURCE = "life.png";
+  private static final String WINDOW_TITLE_KEY = "window_title";
+
+  private MainController controller;
 
   /**
    * Launches this JavaFX application by invoking the {@link #launch(String...)} method, passing
@@ -38,14 +52,23 @@ public class Life extends Application {
 
   @Override
   public void start(Stage stage) throws Exception {
-    // TODO Load scene from FXML and set scene on stage.
+    ResourceBundle bundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
+    FXMLLoader fxmlLoader = new FXMLLoader(Life.class.getResource(LAYOUT_RESOURCE), bundle);
+    Parent root = fxmlLoader.load();
+    controller = fxmlLoader.getController();
+    Scene scene = new Scene(root);
+    stage.setTitle(bundle.getString(WINDOW_TITLE_KEY));
+    stage.getIcons().add(new Image(Life.class.getResourceAsStream(ICON_RESOURCE)));
+    stage.setResizable(false); // TODO Make resizable.
+    stage.setScene(scene);
+    stage.sizeToScene();
     stage.show();
     // TODO Set stage size.
   }
 
   @Override
   public void stop() throws Exception {
-    // TODO Stop any background processing.
+    controller.stop();
     super.stop();
   }
 
